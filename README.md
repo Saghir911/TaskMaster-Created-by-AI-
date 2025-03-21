@@ -40,10 +40,10 @@ A feature-rich task management web application that helps you organize your dail
 
 No installation required - this is a client-side application that runs directly in your browser.
 
-- Visit the [live demo](https://saghir911.github.io/task/)
+- Visit the [live demo](https://saghir911.github.io/TaskMaster/)
 - Clone the repository to run locally:
   ```
-  git clone https://github.com/Saghir911/task.git
+  git clone https://github.com/Saghir911/TaskMaster.git
   ```
 
 ## Screenshots
