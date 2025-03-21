@@ -569,3 +569,34 @@ function animateTaskCount(element, newValue) {
     },
   });
 }
+
+// Function to setup edit animations
+function setupEditAnimations() {
+  document.addEventListener("click", function (e) {
+    // When edit button is clicked
+    if (e.target.closest(".task-edit")) {
+      const taskItem = e.target.closest(".task-item");
+      if (taskItem) {
+        // Animate the transition to edit mode
+        gsap.to(taskItem, {
+          backgroundColor: "rgba(139, 92, 246, 0.05)",
+          borderColor: "rgba(139, 92, 246, 0.3)",
+          duration: 0.3,
+        });
+      }
+    }
+
+    // When save or cancel buttons are clicked
+    if (e.target.closest(".edit-save") || e.target.closest(".edit-cancel")) {
+      const taskItem = e.target.closest(".task-item");
+      if (taskItem) {
+        // Animate back to normal state
+        gsap.to(taskItem, {
+          backgroundColor: "",
+          borderColor: "",
+          duration: 0.3,
+        });
+      }
+    }
+  });
+}

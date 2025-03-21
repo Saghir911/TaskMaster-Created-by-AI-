@@ -20,7 +20,14 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       console.log("Opened cache");
-      return cache.addAll(urlsToCache);
+      // Cache each file individually to prevent one failure from aborting everything
+      return Promise.allSettled(
+        urlsToCache.map((url) =>
+          cache.add(url).catch((error) => {
+            console.warn(`Failed to cache ${url}: ${error.message}`);
+          })
+        )
+      );
     })
   );
 });
