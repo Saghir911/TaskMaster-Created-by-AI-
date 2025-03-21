@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="A modern, feature-rich todo app to organize your tasks efficiently">
+        <meta name="theme-color" content="#8b5cf6">
+        <title>TaskMaster - Organize Your Day</title>
+        <link rel="icon"
+            href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjU2IiBjeT0iMjU2IiByPSIyNTYiIGZpbGw9IiM4YjVjZjYiLz48cGF0aCBkPSJNMjI1IDEzMUwxMzUgMjIxTDEzNSAzODFMMzc3IDM4MUwzNzcgMjIxTDI4NyAxMzFMMjI1IDEzMVoiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMjQiLz48cGF0aCBkPSJNMTgxIDI2N0wzMzEgMjY3IiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMTgxIDIxOUwzMzEgMjE5IiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMTgxIDMxNUwzMzEgMzE1IiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4="
+            type="image/svg+xml">
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <link rel="manifest" href="manifest.json">
+        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <!-- GSAP Library -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+        <!-- jsPDF for PDF export -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="todo-app">
+                <div class="app-header">
+                    <div class="header-title">
+                        <h1>Task<span class="highlight">Master</span></h1>
+                        <p class="app-tagline">Organize your day with ease</p>
+                    </div>
+                    <div class="digital-clock">
+                        <div class="clock-time" id="digitalClock">00:00:00</div>
+                        <div class="clock-date" id="currentDate">Mon, Jan 1</div>
+                    </div>
+                </div>
+
+                <div class="theme-switch-wrapper">
+                    <span class="theme-switch-label">Dark Mode</span>
+                    <label class="theme-switch">
+                        <input type="checkbox" id="themeToggle">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text">Completed: <span id="progressText">0%</span></div>
+                </div>
+
+                <form id="taskForm" class="input-container">
+                    <input type="text" id="taskInput" placeholder="Add a new task...">
+                    <div class="custom-select">
+                        <select id="prioritySelect" class="priority-select">
+                            <option value="normal">Normal</option>
+                            <option value="high">High</option>
+                            <option value="low">Low</option>
+                        </select>
+                        <div class="select-icon">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <button type="submit" id="addTask">Add</button>
+                </form>
+
+                <div class="search-container">
+                    <input type="text" id="searchInput" placeholder="Search tasks...">
+                    <i class="fas fa-search search-icon"></i>
+                </div>
+
+                <div class="filter-container">
+                    <div class="filters">
+                        <span class="filter" data-status="all">All</span>
+                        <span class="filter" data-status="active">Active</span>
+                        <span class="filter" data-status="completed">Completed</span>
+                    </div>
+                    <div class="priority-filters">
+                        <span class="priority-filter" data-priority="all">All</span>
+                        <span class="priority-filter priority-high" data-priority="high"><i class="fas fa-arrow-up"></i>
+                            High</span>
+                        <span class="priority-filter priority-normal" data-priority="normal"><i
+                                class="fas fa-minus"></i> Normal</span>
+                        <span class="priority-filter priority-low" data-priority="low"><i class="fas fa-arrow-down"></i>
+                            Low</span>
+                    </div>
+                    <button id="clearCompleted">Clear Completed</button>
+                </div>
+
+                <ul id="taskList" class="task-list">
+                    <!-- Tasks will be added here by JavaScript -->
+                </ul>
+
+                <div class="task-stats">
+                    <div class="task-counts">
+                        <span>Total: <span class="total-tasks">0</span></span>
+                        <span>Active: <span class="active-tasks">0</span></span>
+                        <span>Completed: <span class="completed-tasks">0</span></span>
+                    </div>
+                    <button class="bulk-actions-btn">Bulk Actions</button>
+                    <div class="bulk-actions-menu">
+                        <button onclick="markAllCompleted()">Mark All Completed</button>
+                        <button onclick="markAllActive()">Mark All Active</button>
+                        <button onclick="deleteAllTasks()">Delete All Tasks</button>
+                        <button onclick="exportTasksAsPDF()">Export as PDF</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Task Item Template -->
+        <template id="taskTemplate">
+            <li class="task-item">
+                <div class="task-content">
+                    <input type="checkbox" class="task-checkbox">
+                    <label class="task-text"></label>
+                    <span class="task-priority-badge"></span>
+                </div>
+                <div class="task-actions">
+                    <button class="task-edit"><i class="fas fa-edit"></i></button>
+                    <button class="task-delete"><i class="fas fa-trash"></i></button>
+                </div>
+            </li>
+        </template>
+
+        <script src="script.js"></script>
+        <script src="animations.js"></script>
+        <script>
+            // Register service worker for offline capability
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function () {
+                    navigator.serviceWorker.register('/service-worker.js')
+                        .then(function (registration) {
+                            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                        }, function (err) {
+                            console.log('ServiceWorker registration failed: ', err);
+                        });
+                });
+
+                // Check if app can be installed
+                let deferredPrompt;
+                const installPrompt = document.createElement('div');
+                installPrompt.className = 'install-prompt';
+                installPrompt.innerHTML = `
+                    <span>Add TaskMaster to your home screen</span>
+                    <button class="install-button">Install</button>
+                    <button class="close-prompt"><i class="fas fa-times"></i></button>
+                `;
+                document.body.appendChild(installPrompt);
+
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    // Prevent Chrome 67+ from automatically showing the prompt
+                    e.preventDefault();
+                    // Store the event so it can be triggered later
+                    deferredPrompt = e;
+                    // Show the install prompt after a delay
+                    setTimeout(() => {
+                        installPrompt.classList.add('show');
+                    }, 3000);
+                });
+
+                // Handle install button click
+                document.querySelector('.install-button')?.addEventListener('click', () => {
+                    if (!deferredPrompt) return;
+                    // Show the install prompt
+                    deferredPrompt.prompt();
+                    // Wait for the user to respond to the prompt
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult.outcome === 'accepted') {
+                            console.log('User accepted the install prompt');
+                        }
+                        deferredPrompt = null;
+                        installPrompt.classList.remove('show');
+                    });
+                });
+
+                // Handle close button click
+                document.querySelector('.close-prompt')?.addEventListener('click', () => {
+                    installPrompt.classList.remove('show');
+                });
+            }
+        </script>
+    </body>
+
+</html>
